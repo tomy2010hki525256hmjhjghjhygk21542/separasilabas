@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ejemplo de silabajs</title>
+  <!-- Incluimos la librería -->
+  <script src="silabajs.js"></script>
+  <style>
+    .rojo {
+      color: yellow;
+      animation: parpadeo 0.5s infinite; /* Agregamos la animación */
+    }
+    
+    @keyframes parpadeo {
+      0% { opacity: 0; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    body, html {
+      height: 100%;
+      margin: 20px; /* Añadimos un margen para separar del borde de la ventana */
+      padding: 0;
+      background-color: #222;
+    }
+    
+    #palabra {
+      height: 30vh;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      background-color: #333;
+      color: #fff;
+      margin-bottom: 10px; /* Añadimos un margen inferior para separar del siguiente elemento */
+    }
+
+    #resultado {
+      white-space: pre-wrap;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      margin-bottom: 10px; /* Añadimos un margen inferior para separar del siguiente elemento */
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 10px; /* Añadimos un margen inferior para separar de los otros botones */
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      color: #fff;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+    }
+
+    .btn:hover,
+    .btn:focus {
+      color: #fff;
+      background-color: #286090;
+      border-color: #122b40;
+    }
+
+    .btn:active,
+    .btn.active,
+    .open .dropdown-toggle.btn {
+      background-image: none;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active,
+    .btn-primary.active,
+    .open .dropdown-toggle.btn-primary {
+      color: #fff;
+      background-color: #286090;
+      border-color: #122b40;
+    }
+
+    .btn-lg {
+      padding: 10px 16px;
+      font-size: 18px;
+      line-height: 1.3333333;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div style="max-width: 1200px; margin: 0 auto;"> <!-- Centramos el contenido con un ancho máximo -->
+    <h1 style="color: #fff;font-family: Arial, sans-serif;">SALDAÑA APP</h1>
+    <textarea id="palabra" placeholder="Escribe aquí"></textarea>
+    <br> <!-- Agregamos un salto de línea para separar de los botones -->
+    <button id="pegar" class="btn btn-primary btn-lg">Pegar</button>
+    <button id="boton" class="btn btn-primary btn-lg">Separar sílabas</button>
+    <button id="limpiar" class="btn btn-primary btn-lg">Limpiar</button>
+    <div id="resultado"></div>
+  </div>
+  <script>
+    // Obtenemos los elementos del DOM
+    var palabra = document.getElementById("palabra");
+    var pegar = document.getElementById("pegar");
+    var boton = document.getElementById("boton");
+    var limpiar = document.getElementById("limpiar");
+    var resultado = document.getElementById("resultado");
+    
+    // Añadimos un evento al botón "Pegar" para que pegue el contenido del portapapeles en el textarea
+    pegar.addEventListener("click", function() {
+      navigator.clipboard.readText().then(function(text) {
+        palabra.value = text;
+      });
+    });
+    
+    // Añadimos un evento al botón "Separar sílabas" para que ejecute la función al hacer clic
+    boton.addEventListener("click", function() {
+      // Obtenemos el valor del textarea
+      var texto = palabra.value;
+      // Usamos la librería para obtener las sílabas
+      var silaba = silabaJS.getSilabas(texto);
+      // Creamos una variable para guardar las sílabas con color rojo
+      var coloreadas = "";
+      // Creamos una variable para alternar el color
+      var color = false;
+      // Recorremos el array de sílabas y las vamos añadiendo a la variable con color rojo intercalado
+      for (var i = 0; i < silaba.silabas.length; i++) {
+        // Si el color es verdadero, añadimos un span con la clase "rojo" y cerramos el anterior
+        if (color) {
+          coloreadas += "<span class='rojo'>" + silaba.silabas[i].silaba + "</span>";
+        } else {
+          coloreadas += silaba.silabas[i].silaba;
+        }
+        // Cambiamos el valor del color al opuesto
+        color = !color;
+      }
+      // Mostramos el resultado en el div
+      resultado.innerHTML = coloreadas;
+    });
+    
+    // Añadimos un evento al botón "Limpiar" para que borre el contenido del textarea y el resultado
+    limpiar.addEventListener("click", function() {
+      palabra.value = "";
+      resultado.innerHTML = "";
+    });
+  </script>
+</body>
+</html>
